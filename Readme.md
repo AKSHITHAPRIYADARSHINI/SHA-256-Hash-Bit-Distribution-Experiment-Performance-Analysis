@@ -1,85 +1,98 @@
-# **SHA-256 Name Hash Generator**
+# **SHA-256 Bit Distribution Analysis & Hash Rate Experiment**
 ---
 
 ## **📌 Overview**
-The **SHA-256 Name Hash Generator** is a simple Python script that demonstrates the use of cryptographic hashing.  
-It prompts the user to enter their name, converts the input into bytes, and applies the **SHA-256 hash algorithm** using Python’s built-in `hashlib` module.  
-The final output is a **256-bit (64-character) hexadecimal digest**, representing the cryptographically secure hash of the provided input.
+The `sha256_experiments.py` program is designed to analyze the statistical properties and performance of the **SHA-256 cryptographic hash function**.  
+It generates thousands of unique random inputs, computes their SHA-256 hashes, counts the number of 1-bits in each digest, and produces a histogram showing the distribution.  
+This experiment demonstrates the randomness characteristics of SHA-256 and verifies that its bit distribution approximates a **binomial distribution B(256, 0.5)**.
+
+Additionally, the program measures hash computation performance, calculates **hashes per second**, and estimates the theoretical time required to mount cryptographic attacks such as:
+
+- **Birthday attack (weak collision resistance):** requires ~2¹²⁸ operations  
+- **Brute-force preimage attack (strong collision resistance):** requires ~2²⁵⁶ operations  
+
+The script also computes exact binomial probabilities for user-specified bit counts (e.g., 128, 100).
 
 ---
 
 ## **⚙️ Features**
-- Accepts user input (name or any text).
-- Converts input into bytes for hashing.
-- Computes SHA-256 hash using `hashlib.sha256()`.
-- Outputs a 64-character hexadecimal string.
-- Demonstrates fundamental cryptographic hashing concepts.
+- Generates large sets of unique inputs
+- Computes SHA-256 hashes efficiently
+- Counts 1-bits using NumPy bit operations
+- Produces histogram visualization using Matplotlib
+- Saves bit-count frequency data to CSV
+- Measures and prints:
+  - Total time taken
+  - Hash rate (hashes/second)
+  - Mean & standard deviation of bit counts
+- Estimates cryptographic attack durations
+- Computes binomial probabilities for exact bit counts
 
 ---
 
-## **📘 Algorithm Description (SHA-256)**
-The program uses the **SHA-256 (Secure Hash Algorithm, 256-bit)**, a member of the SHA-2 family developed by the NSA.
-
-### **Key Properties of SHA-256:**
-- **Deterministic:** Same input always produces the same output.
-- **Fixed Output Size:** Always generates a 256-bit hash regardless of input length.
-- **One-Way Function:** Infeasible to reverse the hash to retrieve the original input.
-- **Collision Resistance:** Extremely unlikely for two different inputs to produce identical hashes.
-- **Avalanche Effect:** A small change in input drastically changes the hash.
-
-### **Algorithm Steps (As Per Program Implementation):**
-1. User enters a name or string.
-2. The input string is encoded into bytes using UTF-8.
-3. The byte string is passed to `hashlib.sha256()`.
-4. The SHA-256 hashing algorithm processes the input.
-5. The resulting hash is converted to a readable hexadecimal string using `.hexdigest()`.
-6. The hash is displayed to the user.
-
----
-
-## **📂 File Description**
-### **`sha256_name.py`**
-A Python script that:
-- Requests user input
-- Generates the SHA-256 hash
-- Prints the hash in hexadecimal format
+## **📘 Algorithm Flow**
+1. User inputs the number of random test cases.
+2. Program generates unique random strings by combining counters and random bits.
+3. Each string is hashed using SHA-256 (`hashlib.sha256()`).
+4. The 256-bit digest is converted to bytes and unpacked using NumPy to count 1-bits.
+5. All results are stored and statistically analyzed.
+6. Histogram of bit counts is plotted.
+7. Hash rate is measured based on total runtime.
+8. Time estimates for:
+   - **Birthday attack** (requires ~2¹²⁸ hashes)
+   - **Brute force** (requires ~2²⁵⁶ hashes)
+9. User enters two bit-count values and the program computes the exact binomial probability:
+   \[
+   P(X = k) = \frac{\binom{256}{k}}{2^{256}}
+   \]
 
 ---
 
 ## **▶️ How to Run**
-Follow these steps to execute the program on your machine:
-
-### **1. Install Python**
-Download from: https://www.python.org/downloads/
-
-Ensure **Add Python to PATH** is selected during installation.
-
-### **2. Open Command Prompt / Terminal**
-Windows:
-Win + R → type: cmd → Enter
-
-Copy code
-
-### **3. Navigate to the Script Location**
-Example:
+### **1. Install Python Dependencies**
 ```bash
-cd C:\Users\Dowloads
-4. Run the Program
+pip install numpy matplotlib
+2. Run the Program
 bash
 Copy code
-python sha256_name.py
-5. Enter Your Input
-The program will prompt:
+python sha256_experiments.py
+3. Follow the Prompts
+Example:
 
-yaml
+vbnet
 Copy code
-Enter your name:
-Example Output:
+Number of distinct inputs to generate (e.g., 10000): 10000
+Enter k1 to compute P(X=k1): 128
+Enter k2 to compute P(X=k2): 100
+4. Output Includes
+Histogram window
+
+CSV file saved as:
+
+Copy code
+sha256_ones_counts.csv
+Hash rate
+
+Mean and variance
+
+Estimated attack times
+
+Exact binomial probabilities
+
+📂 Output Files
+sha256_ones_counts.csv – stores bit-count frequency distribution
+
+Histogram Plot Window – shows the distribution visually
 
 📎 Dependencies
-No additional libraries required.
-The script uses only Python’s built-in hashlib.
+Python 3.x
+
+NumPy
+
+Matplotlib
+
+CSV (built-in)
 
 📜 License
-This project is created for educational and academic purposes.
-You may modify or extend the code as needed.
+This project is provided for academic and research purposes.
+Modification and reuse are permitted.
